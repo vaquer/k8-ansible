@@ -1,0 +1,5 @@
+---
+- hosts: nodeservers
+  user: vagrant
+  become: true
+  roles:
