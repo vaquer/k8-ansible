@@ -10,6 +10,12 @@
 - name: Disable SELinux
   selinux:
     state: disabled
-    
+
 - name: Disable firewalld
   systemd: name=firewalld enabled=no state=stopped
+
+- name: Copy kubernetes config file
+  copy: src=config dest=/etc/kubernetes/config
+
+- name: Copy /etc/sysconfig/flanneld
+  copy: src=flanneld dest=/etc/sysconfig/flanneld

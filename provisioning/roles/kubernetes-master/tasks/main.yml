@@ -9,5 +9,24 @@
     
 - name: Copy kubernetes/apiserver
   copy: src=apiserver dest=/etc/kubernetes/apiserver
-  
 
+- name: Start etcd service
+  systemd: name=etcd state=started
+
+- name: Create overlay network
+  command: etcdctl mkdir /kube/network
+  
+- name: Copy flannel config file
+  copy: src=flannel-config.json dest=/tmp/flannel-config.json
+
+- name: Configure overlay network
+  shell: etcdctl set /kube/network/config < /tmp/flannel-config.json
+
+- name: Restart services
+  systemd: name={{ item }} state=restarted enabled=True
+  with_items:
+    - etcd
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - flanneld
