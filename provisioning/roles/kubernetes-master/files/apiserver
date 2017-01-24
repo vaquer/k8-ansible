@@ -23,4 +23,4 @@ KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=172.16.0.0/16"
 KUBE_ADMISSION_CONTROL="--admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
 
 # Add your own!
-KUBE_API_ARGS="--service_account_key_file=/tmp/serviceaccount.key"
+KUBE_API_ARGS="--service_account_key_file=/etc/kubernetes/serviceaccount.key"

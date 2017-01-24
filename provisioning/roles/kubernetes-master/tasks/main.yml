@@ -6,8 +6,35 @@
 
 - name: Copy etcd.conf file
   copy: src=etcd.conf dest=/etc/etcd/etcd.conf
-    
+
+- name: Generate private key
+  shell: openssl genrsa -out /etc/kubernetes/serviceaccount.key 2048
+
 - name: Copy kubernetes/apiserver
   copy: src=apiserver dest=/etc/kubernetes/apiserver
-  
 
+- name: Copy kubernetes/controller-manager
+  copy: src=controller-manager dest=/etc/kubernetes/controller-manager
+
+- name: Start etcd service
+  systemd: name=etcd state=started
+  register: etcdstarted
+
+- name: Create overlay network
+  command: etcdctl mkdir /kube/network
+  when: etcdstarted|succeeded
+  
+- name: Copy flannel config file
+  copy: src=flannel-config.json dest=/tmp/flannel-config.json
+
+- name: Configure overlay network
+  shell: etcdctl set /kube/network/config < /tmp/flannel-config.json
+
+- name: Restart services
+  systemd: name={{ item }} state=restarted enabled=True
+  with_items:
+    - etcd
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - flanneld

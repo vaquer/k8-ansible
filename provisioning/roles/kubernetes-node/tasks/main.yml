@@ -1,3 +1,14 @@
 ---
-- name: Configure flanneld
-  
+- name: Set kubelet API server
+  lineinfile:
+    dest: /etc/kubernetes/kubelet
+    regexp: '^KUBELET_API_SERVER='
+    line: 'KUBELET_API_SERVER="--api-servers=http://master:8080"'
+
+- name: Start node services
+  systemd: name={{ item }} state=restarted enabled=True
+  with_items:
+    - kube-proxy
+    - kubelet
+    - flanneld
+    - docker

@@ -3,3 +3,5 @@
   user: vagrant
   become: true
   roles:
+    - kubernetes-common
+    - kubernetes-node
