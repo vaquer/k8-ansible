@@ -7,6 +7,8 @@ Vagrant.configure("2") do |config|
   config.vm.define :master do |master_config|
     master_config.vm.box = "centos/7"
     master_config.vm.box_url = "https://atlas.hashicorp.com/centos/boxes/7"
+    
+    master_config.vm.hostname = "master"
   
     master_config.vm.network :forwarded_port, guest: 8080, host: 8080
     master_config.vm.network :private_network, ip: "192.168.33.10"
@@ -23,6 +25,8 @@ Vagrant.configure("2") do |config|
   config.vm.define :node1 do |node1_config|
     node1_config.vm.box = "centos/7"
     node1_config.vm.box_url = "https://atlas.hashicorp.com/centos/boxes/7"
+    
+    node1_config.vm.hostname = "node1"
   
     node1_config.vm.network :private_network, ip: "192.168.33.20"
   
@@ -38,6 +42,8 @@ Vagrant.configure("2") do |config|
   config.vm.define :node2 do |node2_config|
     node2_config.vm.box = "centos/7"
     node2_config.vm.box_url = "https://atlas.hashicorp.com/centos/boxes/7"
+    
+    node2_config.vm.hostname = "node2"
     
     node2_config.vm.network :private_network, ip: "192.168.33.30"
     

@@ -1,4 +1,16 @@
 ---
+- name: Set kubelet address
+  lineinfile:
+    dest: /etc/kubernetes/kubelet
+    regexp: '^KUBELET_ADDRESS='
+    line: 'KUBELET_ADDRESS="--address=0.0.0.0"'
+
+- name: Set kubelet hostname
+  lineinfile:
+    dest: /etc/kubernetes/kubelet
+    regexp: '^KUBELET_HOSTNAME='
+    line: 'KUBELET_HOSTNAME="--hostname-override={{ ansible_hostname }}"'
+
 - name: Set kubelet API server
   lineinfile:
     dest: /etc/kubernetes/kubelet
