@@ -1,8 +1,12 @@
 ---
 - name: Build hosts file
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
-  when: hostvars[item].ansible_default_ipv4.address is defined
-  with_items: groups['all']
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: '{{ hostvars[item].ansible_default_ipv4.address }} {{item}}'
+    state: present
+  # when: hostvars[item].ansible_default_ipv4.address is defined
+  with_items: '{{groups["all"]}}'
 
 - name: Copy etcd.conf file
   copy: src=etcd.conf dest=/etc/etcd/etcd.conf

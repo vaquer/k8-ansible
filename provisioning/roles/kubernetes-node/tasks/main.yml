@@ -1,4 +1,12 @@
 ---
+- name: Build hosts file
+  lineinfile:
+    dest: /etc/hosts
+    line: '192.168.33.10 master'
+    state: present
+  # when: hostvars[item].ansible_default_ipv4.address is defined
+  with_items: '{{groups["all"]}}'
+
 - name: Set kubelet address
   lineinfile:
     dest: /etc/kubernetes/kubelet
@@ -16,6 +24,17 @@
     dest: /etc/kubernetes/kubelet
     regexp: '^KUBELET_API_SERVER='
     line: 'KUBELET_API_SERVER="--api-servers=http://master:8080"'
+
+- name: Set Pod infra disabled
+  lineinfile:
+    dest: /etc/kubernetes/kubelet
+    regexp: '^KUBELET_POD_INFRA_CONTAINER='
+    line: '#KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"'
+
+- name: Install Subscription Manager
+  yum: name={{ item }} state=present
+  with_items:
+    - subscription-manager
 
 - name: Start node services
   systemd: name={{ item }} state=restarted enabled=True
